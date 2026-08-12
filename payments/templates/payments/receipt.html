@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block title %}Receipt {{ payment.payment_code }} | {{ SITE_NAME }}{% endblock %}
+{% block page_title %}Payment Receipt{% endblock %}
+
+{% block content %}
+<div class="no-print mb-16 flex-between">
+  <a href="{% url 'payment_list' %}" class="btn btn-secondary">&laquo; Back to payments</a>
+  <button type="button" class="btn btn-primary" onclick="window.print()">🖨 Print</button>
+</div>
+
+<div class="receipt">
+  <div class="receipt-head">
+    <div>
+      <div class="login-brand" style="color:#111827;margin:0;text-align:left;">{{ SITE_NAME }}</div>
+      <div class="muted">Payment receipt</div>
+    </div>
+    <div class="text-right">
+      <div class="mono" style="font-size:15px;font-weight:600;">{{ payment.payment_code }}</div>
+      <div class="muted">{{ payment.payment_date }}</div>
+    </div>
+  </div>
+  <div class="receipt-body">
+    <table class="receipt-rows">
+      <tr><td>Receipt number</td><td class="mono">{{ payment.payment_code }}</td></tr>
+      <tr><td>Member name</td><td>{{ payment.member.full_name }}</td></tr>
+      <tr><td>Member ID</td><td class="mono">{{ payment.member.member_code }}</td></tr>
+      <tr><td>Payment type</td><td>{{ payment.get_payment_type_display }}</td></tr>
+      <tr><td>Payment method</td><td>{{ payment.get_payment_method_display }}</td></tr>
+      <tr><td>Amount</td><td class="receipt-total">${{ payment.amount|floatformat:2 }}</td></tr>
+    </table>
+    <p class="muted mt-16" style="font-size:12px;">Status: <strong>Paid</strong> &middot; Generated on {{ payment.created_at|date:'Y-m-d H:i' }}</p>
+  </div>
+</div>
+{% endblock %}

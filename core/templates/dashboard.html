@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+{% load ams_tags %}
+{% block title %}Dashboard | {{ SITE_NAME }}{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="stat-grid">
+  <div class="stat-card">
+    <div class="stat-icon" style="background:#2563eb;">M</div>
+    <div>
+      <div class="stat-label">Total Members</div>
+      <div class="stat-value">{{ total_members }}</div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon" style="background:#16a34a;">A</div>
+    <div>
+      <div class="stat-label">Active Members</div>
+      <div class="stat-value">{{ active_members }}</div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon" style="background:#dc2626;">E</div>
+    <div>
+      <div class="stat-label">Expired Members</div>
+      <div class="stat-value">{{ expired_members }}</div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon" style="background:#7c3aed;">$</div>
+    <div>
+      <div class="stat-label">Total Revenue</div>
+      <div class="stat-value">${{ total_revenue|floatformat:2 }}</div>
+      <div class="stat-sub">paid payments</div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon" style="background:#0891b2;">D</div>
+    <div>
+      <div class="stat-label">Total Donations</div>
+      <div class="stat-value">${{ total_donations|floatformat:2 }}</div>
+      <div class="stat-sub">received</div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon" style="background:#d97706;">E</div>
+    <div>
+      <div class="stat-label">Upcoming Events</div>
+      <div class="stat-value">{{ upcoming_events|length }}</div>
+    </div>
+  </div>
+</div>
+
+{% if active_announcements %}
+<div class="card">
+  <div class="card-header"><h2>Announcements</h2><a href="/events/announcements/">View all</a></div>
+  <div class="card-body flush">
+    {% for ann in active_announcements %}
+    <div class="announcement-item">
+      <div class="ann-title">
+        {% if ann.priority == 'IMPORTANT' %}<span class="badge badge-danger">Important</span> {% endif %}
+        {{ ann.title }}
+      </div>
+      <div class="ann-meta">{{ ann.get_audience_display }} &middot; published {{ ann.publish_date }}</div>
+      <div class="muted mt-0" style="margin-top:6px;">{{ ann.message|truncatewords:40 }}</div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+<div class="grid-2">
+  <div class="card">
+    <div class="card-header"><h2>Recent Members</h2><a href="/members/">View all</a></div>
+    <div class="card-body flush">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Member</th><th>Plan</th><th>Status</th></tr></thead>
+          <tbody>
+            {% for member in recent_members %}
+            <tr>
+              <td>
+                <span class="avatar-sm">{{ member.first_name|first }}</span>
+                <a href="/members/{{ member.pk }}/">{{ member.full_name }}</a>
+                <div class="muted mono">{{ member.member_code }}</div>
+              </td>
+              <td>{{ member.plan.name }}</td>
+              <td>{% status_badge member.status %}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="3"><div class="empty-state"><div class="empty-icon">👤</div><p>No members yet. <a href="/members/add/">Add the first member</a>.</p></div></td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><h2>Upcoming Events</h2><a href="/events/">View all</a></div>
+    <div class="card-body flush">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Event</th><th>Date</th><th>Venue</th></tr></thead>
+          <tbody>
+            {% for event in upcoming_events %}
+            <tr>
+              <td><a href="/events/{{ event.pk }}/">{{ event.name }}</a></td>
+              <td>{{ event.event_date }}</td>
+              <td>{{ event.venue|default:'—' }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="3"><div class="empty-state"><div class="empty-icon">📅</div><p>No upcoming events.</p></div></td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><h2>Recent Payments</h2><a href="{% url 'payment_list' %}">View all</a></div>
+    <div class="card-body flush">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Payment</th><th>Member</th><th>Amount</th><th>Status</th></tr></thead>
+          <tbody>
+            {% for payment in recent_payments %}
+            <tr>
+              <td class="mono">{{ payment.payment_code }}</td>
+              <td>{{ payment.member.full_name }}</td>
+              <td>${{ payment.amount|floatformat:2 }}</td>
+              <td>{% status_badge payment.get_status_display %}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4"><div class="empty-state"><div class="empty-icon">💳</div><p>No payments recorded yet.</p></div></td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><h2>Recent Donations</h2><a href="{% url 'donation_list' %}">View all</a></div>
+    <div class="card-body flush">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Donation</th><th>Member</th><th>Amount</th><th>Status</th></tr></thead>
+          <tbody>
+            {% for donation in recent_donations %}
+            <tr>
+              <td class="mono">{{ donation.donation_code }}</td>
+              <td>{{ donation.member.full_name }}</td>
+              <td>${{ donation.amount|floatformat:2 }}</td>
+              <td>{% status_badge donation.get_status_display %}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4"><div class="empty-state"><div class="empty-icon">🎁</div><p>No donations yet. Members can donate at <a href="/donate/">/donate/</a>.</p></div></td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header"><h2>Members by Membership Plan</h2></div>
+  <div class="card-body">
+    {% if members_by_plan %}
+    <div class="chart">
+      {% for plan in members_by_plan %}
+      {% with pct=plan.member_count|divide:total_members %}
+      <div class="chart-row">
+        <div class="chart-label">{{ plan.name }}</div>
+        <div class="chart-track">
+          <div class="chart-bar {% if plan.member_count == 0 %}empty{% endif %}" style="width:{% if total_members %}{{ pct|floatformat:0 }}%{% else %}0{% endif %};">
+            {{ plan.member_count }}
+          </div>
+        </div>
+      </div>
+      {% endwith %}
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state"><div class="empty-icon">📊</div><p>No members yet.</p></div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

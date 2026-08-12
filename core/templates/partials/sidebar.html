@@ -1,0 +1,18 @@
+{% load static %}
+<aside class="sidebar">
+  <div class="sidebar-brand"><span>{{ SITE_NAME }}</span></div>
+  <nav class="sidebar-nav">
+    <a href="{% url 'dashboard' %}" class="{% if request.path == '/' %}active{% endif %}">Dashboard</a>
+    <a href="/members/" class="{% if '/members/' in request.path and not '/plans/' in request.path %}active{% endif %}">Members</a>
+    <a href="/members/plans/" class="{% if '/plans/' in request.path %}active{% endif %}">Memberships</a>
+    <a href="{% url 'payment_list' %}" class="{% if '/payments/' in request.path %}active{% endif %}">Payments</a>
+    <a href="/events/" class="{% if '/events/' in request.path %}active{% endif %}">Events</a>
+    <a href="{% url 'donation_list' %}" class="{% if '/donations/' in request.path %}active{% endif %}">Donations</a>
+    <a href="/events/email/" class="{% if '/email/' in request.path %}active{% endif %}">Email</a>
+    <a href="/events/announcements/" class="{% if '/announcements/' in request.path %}active{% endif %}">Announcements</a>
+    <a href="{% url 'settings' %}" class="{% if request.path|slice:':11' == '/settings/' %}active{% endif %}">Settings</a>
+  </nav>
+  <div class="sidebar-footer">
+    {{ user.get_role_display }} &middot; logged in
+  </div>
+</aside>

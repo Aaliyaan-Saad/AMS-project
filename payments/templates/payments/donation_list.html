@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load ams_tags %}
+{% block title %}Donations | {{ SITE_NAME }}{% endblock %}
+{% block page_title %}Donations{% endblock %}
+
+{% block content %}
+<div class="stat-grid">
+  <div class="stat-card">
+    <div class="stat-icon" style="background:#0891b2;">D</div>
+    <div>
+      <div class="stat-label">Total Donations</div>
+      <div class="stat-value">${{ total_received|floatformat:2 }}</div>
+      <div class="stat-sub">received in total</div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon" style="background:#16a34a;">M</div>
+    <div>
+      <div class="stat-label">Donations This Month</div>
+      <div class="stat-value">${{ month_received|floatformat:2 }}</div>
+      <div class="stat-sub">received this month</div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header"><h2>All Donations</h2></div>
+  <div class="card-body">
+    <form method="get" class="filter-bar">
+      <input type="text" name="q" value="{{ search }}" placeholder="Search member or donation ID">
+      <select name="status">
+        <option value="">All statuses</option>
+        {% for value, label in statuses %}<option value="{{ value }}" {% if selected_status == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
+      </select>
+      <input type="date" name="date_from" value="{{ date_from }}" title="From date">
+      <input type="date" name="date_to" value="{{ date_to }}" title="To date">
+      <button type="submit" class="btn btn-secondary">Filter</button>
+    </form>
+
+    {% if page_obj.object_list %}
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Donation ID</th><th>Member</th><th>Amount</th><th>Date</th><th>Method</th><th>Status</th><th>Message</th><th></th></tr>
+        </thead>
+        <tbody>
+          {% for donation in page_obj %}
+          <tr>
+            <td class="mono">{{ donation.donation_code }}</td>
+            <td>
+              <a href="/members/{{ donation.member.pk }}/">{{ donation.member.full_name }}</a>
+              <div class="muted mono">{{ donation.member.member_code }}</div>
+            </td>
+            <td class="mono">${{ donation.amount|floatformat:2 }}</td>
+            <td>{{ donation.donation_date }}</td>
+            <td>{{ donation.get_payment_method_display }}</td>
+            <td>{% status_badge donation.get_status_display %}</td>
+            <td class="muted">{{ donation.message|default:'—'|truncatechars:40 }}</td>
+            <td class="text-right">
+              {% if user.is_admin and donation.status == 'PENDING' %}
+              <form method="post" action="{% url 'donation_status' donation.pk %}">
+                {% csrf_token %}
+                <input type="hidden" name="status" value="RECEIVED">
+                <button type="submit" class="btn btn-sm btn-primary">Confirm received</button>
+              </form>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <div class="empty-icon">🎁</div>
+      <h3>No donations found</h3>
+      <p>{% if search or selected_status or date_from or date_to %}Try adjusting your search or filters.{% else %}Members can donate at <a href="/donate/">/donate/</a>.{% endif %}</p>
+    </div>
+    {% endif %}
+  </div>
+  {% include 'partials/pagination.html' %}
+</div>
+{% endblock %}

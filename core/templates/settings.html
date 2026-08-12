@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}Settings | {{ SITE_NAME }}{% endblock %}
+{% block page_title %}Settings{% endblock %}
+
+{% block content %}
+<div class="card">
+  <div class="card-header"><h2>My Account</h2></div>
+  <div class="card-body">
+    <div class="form-row">
+      <div class="form-group">
+        <label>Name</label>
+        <input type="text" value="{{ user.name }}" disabled>
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="text" value="{{ user.email }}" disabled>
+      </div>
+      <div class="form-group">
+        <label>Role</label>
+        <input type="text" value="{{ user.get_role_display }}" disabled>
+      </div>
+    </div>
+    <div class="btn-row">
+      <a href="{% url 'change_password' %}" class="btn btn-primary">Change password</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

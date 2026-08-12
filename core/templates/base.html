@@ -1,0 +1,42 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}{{ SITE_NAME }}{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+{% if user.is_authenticated %}
+<div class="layout">
+  {% include 'partials/sidebar.html' %}
+  <div class="main">
+    <header class="topbar">
+      <h1>{% block page_title %}{% endblock %}</h1>
+      <div class="topbar-user">
+        <div class="user-meta text-right">
+          <div class="user-name">{{ user.name }}</div>
+          <div class="user-role">{{ user.get_role_display }}</div>
+        </div>
+        <div class="avatar">{{ user.name|first|upper }}{% if user.name|length > 1 %}{{ user.name|slice:'-1:'|upper }}{% endif %}</div>
+        <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button type="submit" class="btn btn-sm btn-secondary">Logout</button></form>
+      </div>
+    </header>
+    <main class="content">
+      <div class="content-inner">
+        {% include 'partials/messages.html' %}
+        {% block content %}{% endblock %}
+      </div>
+    </main>
+  </div>
+</div>
+{% else %}
+  {% block auth_content %}{% endblock %}
+{% endif %}
+
+{% include 'partials/confirm_modal.html' %}
+<div id="messages-container">{% if messages %}{% for message in messages %}<div class="toast {{ message.tags }}">{{ message }}</div>{% endfor %}{% endif %}</div>
+<script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>

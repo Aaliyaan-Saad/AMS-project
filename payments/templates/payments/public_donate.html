@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}Donate | {{ SITE_NAME }}{% endblock %}
+
+{% block auth_content %}
+<div class="login-page">
+  <div style="width:100%; max-width:440px;">
+    <div class="login-brand">{{ SITE_NAME }} <span>Donations</span></div>
+    <div class="login-card">
+      <h1>Make a donation</h1>
+      <p class="login-sub">Enter your Member ID to donate. Donations are confirmed by the association.</p>
+
+      {% if form.non_field_errors %}<div class="alert alert-error">{{ form.non_field_errors.0 }}</div>{% endif %}
+
+      <form method="post" class="js-loading">
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="form-group">
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }}
+          {% if field.help_text %}<div class="help-text">{{ field.help_text }}</div>{% endif %}
+          {% if field.errors %}<div class="error">{{ field.errors.0 }}</div>{% endif %}
+        </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary btn-block">Submit donation</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

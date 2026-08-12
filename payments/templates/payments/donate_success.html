@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}Thank you | {{ SITE_NAME }}{% endblock %}
+
+{% block auth_content %}
+<div class="login-page">
+  <div style="width:100%; max-width:440px;">
+    <div class="login-brand">{{ SITE_NAME }} <span>Donations</span></div>
+    <div class="login-card text-center">
+      <div style="font-size:48px; margin-bottom:8px;">🎉</div>
+      <h1>Thank you!</h1>
+      <p class="login-sub">Your donation has been submitted and is awaiting confirmation by the association.</p>
+      <div class="btn-row" style="justify-content:center;">
+        <a href="/donate/" class="btn btn-primary">Make another donation</a>
+        <a href="{% url 'login' %}" class="btn btn-secondary">Staff login</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
