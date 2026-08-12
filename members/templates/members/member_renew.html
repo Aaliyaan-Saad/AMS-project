@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Renew Membership</h2>
+
+    <div class="card mt-3 mb-3">
+        <div class="card-body">
+            <p><strong>Member:</strong> {{ member.full_name }}</p>
+            <p><strong>Current Plan:</strong> {{ member.plan.name }}</p>
+            <p><strong>Current Expiry Date:</strong> {{ member.expiry_date|default:"-" }}</p>
+            <p><strong>Status:</strong> {{ member.status }}</p>
+        </div>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <label for="plan" class="form-label">Select Plan</label>
+            <select name="plan" id="plan" class="form-select" required>
+                {% for plan in plans %}
+                    <option value="{{ plan.pk }}" {% if plan.pk == member.plan.pk %}selected{% endif %}>
+                        {{ plan.name }} - {{ plan.duration_months }} month(s) - {{ plan.price }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-success">Renew</button>
+        <a href="{% url 'member_detail' member.pk %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}
