@@ -30,8 +30,15 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    # Add your routes here, e.g.:
-    # path('', views.member_list, name='member_list'),
-    # path('add/', views.member_add, name='member_add'),
-    # path('plans/', views.plan_list, name='plan_list'),
+    path("", views.member_list, name="member_list"),
+    path("add/", views.member_add, name="member_add"),
+    path("<int:pk>/", views.member_detail, name="member_detail"),
+    path("<int:pk>/edit/", views.member_edit, name="member_edit"),
+    path("<int:pk>/delete/", views.member_delete, name="member_delete"),
+    path("<int:pk>/renew/", views.member_renew, name="member_renew"),
+
+    path("plans/", views.plan_list, name="plan_list"),
+    path("plans/add/", views.plan_add, name="plan_add"),
+    path("plans/<int:pk>/edit/", views.plan_edit, name="plan_edit"),
+    path("plans/<int:pk>/disable/", views.plan_disable, name="plan_disable"),
 ]
