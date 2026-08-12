@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Disable Membership Plan</h2>
+
+    <div class="alert alert-warning mt-3">
+        Are you sure you want to disable <strong>{{ plan.name }}</strong>?
+        <br>
+        This will not delete the plan. Existing members will still keep it.
+    </div>
+
+    <form method="post" data-confirm="Are you sure you want to disable this plan?">
+        {% csrf_token %}
+
+        <button type="submit" class="btn btn-warning">Yes, Disable</button>
+        <a href="{% url 'plan_list' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}
