@@ -1,54 +1,165 @@
 {% extends "base.html" %}
 
+{% block page_title %}Membership Plans{% endblock %}
+
 {% block content %}
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>Membership Plans</h2>
-        <a href="{% url 'plan_add' %}" class="btn btn-primary">Create Plan</a>
-    </div>
 
-    {% if plans %}
-        <div class="table-wrap">
-            <table class="table table-striped table-hover align-middle">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Price</th>
-                        <th>Duration</th>
-                        <th>Status</th>
-                        <th class="text-end">Actions</th>
-                    </tr>
-                </thead>
+<style>
+    .page-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
 
-                <tbody>
-                    {% for plan in plans %}
-                        <tr>
-                            <td>{{ plan.name }}</td>
-                            <td>{{ plan.price }}</td>
-                            <td>{{ plan.duration_months }} month(s)</td>
-                            <td>
-                                {% if plan.active %}
-                                    Active
-                                {% else %}
-                                    Disabled
-                                {% endif %}
-                            </td>
-                            <td class="text-end">
-                                <a href="{% url 'plan_edit' plan.pk %}" class="btn btn-sm btn-outline-primary">Edit</a>
+    .page-header h2 {
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #111827;
+    }
 
-                                {% if plan.active %}
-                                    <a href="{% url 'plan_disable' plan.pk %}" class="btn btn-sm btn-outline-warning">Disable</a>
-                                {% endif %}
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    {% else %}
-        <div class="alert alert-info">
-            No membership plans found.
-        </div>
-    {% endif %}
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 36px;
+        padding: 0.45rem 0.8rem;
+        border-radius: 6px;
+        border: 1px solid transparent;
+        font-size: 0.875rem;
+        font-weight: 500;
+        text-decoration: none;
+        cursor: pointer;
+        white-space: nowrap;
+    }
+
+    .btn-primary {
+        background: #2563eb;
+        color: #ffffff;
+        border-color: #2563eb;
+    }
+
+    .btn-secondary {
+        background: #ffffff;
+        color: #374151;
+        border-color: #d1d5db;
+    }
+
+    .btn-warning {
+        background: #ffffff;
+        color: #d97706;
+        border-color: #fde68a;
+    }
+
+    .btn-sm {
+        min-height: 30px;
+        padding: 0.35rem 0.55rem;
+        font-size: 0.8rem;
+    }
+
+    .actions-cell {
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.4rem;
+        flex-wrap: wrap;
+    }
+
+    .badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.25rem 0.55rem;
+        border-radius: 999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .badge-active {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .badge-disabled {
+        background: #f3f4f6;
+        color: #4b5563;
+    }
+
+    .empty-state {
+        padding: 2rem;
+        text-align: center;
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        color: #6b7280;
+    }
+
+    @media (max-width: 700px) {
+        .page-header {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .actions-cell {
+            justify-content: flex-start;
+        }
+    }
+</style>
+
+<div class="page-header">
+    <h2>Membership Plans</h2>
+    <a href="{% url 'plan_add' %}" class="btn btn-primary">Create Plan</a>
 </div>
+
+{% if plans %}
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Duration</th>
+                    <th>Status</th>
+                    <th style="text-align: right;">Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for plan in plans %}
+                    <tr>
+                        <td>{{ plan.name }}</td>
+                        <td>{{ plan.price }}</td>
+                        <td>{{ plan.duration_months }} month(s)</td>
+                        <td>
+                            {% if plan.active %}
+                                <span class="badge badge-active">Active</span>
+                            {% else %}
+                                <span class="badge badge-disabled">Disabled</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="actions-cell">
+                                <a href="{% url 'plan_edit' plan.pk %}" class="btn btn-sm btn-secondary">
+                                    Edit
+                                </a>
+
+                                {% if plan.active %}
+                                    <a href="{% url 'plan_disable' plan.pk %}" class="btn btn-sm btn-warning">
+                                        Disable
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <div class="empty-state">
+        No membership plans found.
+    </div>
+{% endif %}
+
 {% endblock %}
+
