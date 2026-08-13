@@ -166,26 +166,34 @@
 </div>
 
 <div class="card">
-  <div class="card-header"><h2>Members by Membership Plan</h2></div>
+  <div class="card-header"><h2>Analytics</h2></div>
   <div class="card-body">
-    {% if members_by_plan %}
-    <div class="chart">
-      {% for plan in members_by_plan %}
-      {% with pct=plan.member_count|divide:total_members %}
-      <div class="chart-row">
-        <div class="chart-label">{{ plan.name }}</div>
-        <div class="chart-track">
-          <div class="chart-bar {% if plan.member_count == 0 %}empty{% endif %}" style="width:{% if total_members %}{{ pct|floatformat:0 }}%{% else %}0{% endif %};">
-            {{ plan.member_count }}
-          </div>
-        </div>
+    <div class="analytics-grid">
+      <div class="analytics-item">
+        <h3>Members by Plan</h3>
+        {% chart_bars members_by_plan %}
       </div>
-      {% endwith %}
-      {% endfor %}
+      <div class="analytics-item">
+        <h3>Members by Status</h3>
+        {% donut_chart members_by_status center_label='Members' %}
+      </div>
+      <div class="analytics-item">
+        <h3>Donations by Status</h3>
+        {% donut_chart donations_by_status center_label='Donations' %}
+      </div>
+      <div class="analytics-item">
+        <h3>Revenue by Payment Type</h3>
+        {% chart_bars revenue_by_type value_format='money' %}
+      </div>
+      <div class="analytics-item">
+        <h3>Revenue — Last 6 Months</h3>
+        {% chart_bars revenue_by_month value_format='money' %}
+      </div>
+      <div class="analytics-item">
+        <h3>Donations — Last 6 Months</h3>
+        {% chart_bars donations_by_month value_format='money' %}
+      </div>
     </div>
-    {% else %}
-    <div class="empty-state"><div class="empty-icon">📊</div><p>No members yet.</p></div>
-    {% endif %}
   </div>
 </div>
 {% endblock %}
