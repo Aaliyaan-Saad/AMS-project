@@ -1,16 +1,95 @@
 {% extends "base.html" %}
 
+{% block page_title %}{{ title }}{% endblock %}
+
 {% block content %}
-<div class="container mt-4">
+
+<style>
+    .form-card {
+        max-width: 720px;
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        padding: 1.5rem;
+    }
+
+    .form-card h2 {
+        margin: 0 0 1rem;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #111827;
+    }
+
+    .form-card form p {
+        margin-bottom: 1rem;
+    }
+
+    .form-card label {
+        display: block;
+        margin-bottom: 0.35rem;
+        font-weight: 600;
+        color: #374151;
+    }
+
+    .form-card input,
+    .form-card select,
+    .form-card textarea {
+        width: 100%;
+        min-height: 38px;
+        padding: 0.45rem 0.65rem;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        background: #ffffff;
+        color: #111827;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+        margin-top: 1rem;
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 36px;
+        padding: 0.45rem 0.8rem;
+        border-radius: 6px;
+        border: 1px solid transparent;
+        font-size: 0.875rem;
+        font-weight: 500;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .btn-primary {
+        background: #2563eb;
+        color: #ffffff;
+        border-color: #2563eb;
+    }
+
+    .btn-secondary {
+        background: #ffffff;
+        color: #374151;
+        border-color: #d1d5db;
+    }
+</style>
+
+<div class="form-card">
     <h2>{{ title }}</h2>
 
-    <form method="post" class="mt-3">
+    <form method="post">
         {% csrf_token %}
 
         {{ form.as_p }}
 
-        <button type="submit" class="btn btn-primary">Save</button>
-        <a href="{% url 'plan_list' %}" class="btn btn-secondary">Cancel</a>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <a href="{% url 'plan_list' %}" class="btn btn-secondary">Cancel</a>
+        </div>
     </form>
 </div>
+
 {% endblock %}

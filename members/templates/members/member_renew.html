@@ -1,34 +1,129 @@
 {% extends "base.html" %}
+{% load ams_tags %}
+
+{% block page_title %}Renew Membership{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <h2>Renew Membership</h2>
 
-    <div class="card mt-3 mb-3">
-        <div class="card-body">
-            <p><strong>Member:</strong> {{ member.full_name }}</p>
-            <p><strong>Current Plan:</strong> {{ member.plan.name }}</p>
-            <p><strong>Current Expiry Date:</strong> {{ member.expiry_date|default:"-" }}</p>
-            <p><strong>Status:</strong> {{ member.status }}</p>
-        </div>
+<style>
+    .renew-card,
+    .form-card {
+        max-width: 720px;
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    h2 {
+        margin: 0 0 1rem;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #111827;
+    }
+
+    .detail-row {
+        margin-bottom: 0.65rem;
+        color: #111827;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 0.35rem;
+        font-weight: 600;
+        color: #374151;
+    }
+
+    select {
+        width: 100%;
+        min-height: 38px;
+        padding: 0.45rem 0.65rem;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        background: #ffffff;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+        margin-top: 1rem;
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 36px;
+        padding: 0.45rem 0.8rem;
+        border-radius: 6px;
+        border: 1px solid transparent;
+        font-size: 0.875rem;
+        font-weight: 500;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .btn-success {
+        background: #16a34a;
+        color: #ffffff;
+        border-color: #16a34a;
+    }
+
+    .btn-secondary {
+        background: #ffffff;
+        color: #374151;
+        border-color: #d1d5db;
+    }
+</style>
+
+<h2>Renew Membership</h2>
+
+<div class="renew-card">
+    <div class="detail-row"><strong>Member:</strong> {{ member.full_name }}</div>
+
+    <div class="detail-row">
+        <strong>Current Plan:</strong>
+        {% if member.plan %}
+            {{ member.plan.name }}
+        {% else %}
+            -
+        {% endif %}
     </div>
 
+    <div class="detail-row">
+        <strong>Current Expiry Date:</strong>
+        {% if member.expiry_date %}
+            {{ member.expiry_date|date:"M. d, Y" }}
+        {% else %}
+            -
+        {% endif %}
+    </div>
+
+    <div class="detail-row">
+        <strong>Status:</strong> {% status_badge member.status %}
+    </div>
+</div>
+
+<div class="form-card">
     <form method="post">
         {% csrf_token %}
 
-        <div class="mb-3">
-            <label for="plan" class="form-label">Select Plan</label>
-            <select name="plan" id="plan" class="form-select" required>
-                {% for plan in plans %}
-                    <option value="{{ plan.pk }}" {% if plan.pk == member.plan.pk %}selected{% endif %}>
-                        {{ plan.name }} - {{ plan.duration_months }} month(s) - {{ plan.price }}
-                    </option>
-                {% endfor %}
-            </select>
-        </div>
+        <label for="plan">Select Plan</label>
+        <select name="plan" id="plan" required>
+            {% for plan in plans %}
+                <option value="{{ plan.pk }}" {% if member.plan and plan.pk == member.plan.pk %}selected{% endif %}>
+                    {{ plan.name }} - {{ plan.duration_months }} month(s) - {{ plan.price }}
+                </option>
+            {% endfor %}
+        </select>
 
-        <button type="submit" class="btn btn-success">Renew</button>
-        <a href="{% url 'member_detail' member.pk %}" class="btn btn-secondary">Cancel</a>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-success">Renew</button>
+            <a href="{% url 'member_detail' member.pk %}" class="btn btn-secondary">Cancel</a>
+        </div>
     </form>
 </div>
+
 {% endblock %}
