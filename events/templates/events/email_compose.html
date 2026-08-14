@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Compose Email</h2>
+        <a href="{% url 'email_list' %}" class="btn btn-secondary">Back to History</a>
+    </div>
+
+    <div class="alert alert-secondary">
+        Emails are sent through the development console backend. Each sent email is recorded in the email history.
+    </div>
+
+    <form method="post" class="mt-3">
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button type="submit" class="btn btn-primary">Send Email</button>
+        <a href="{% url 'email_list' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var typeSelect = document.getElementById("id_recipient_type");
+        var membersField = document.getElementById("id_members");
+        if (typeSelect && membersField) {
+            var membersGroup = membersField.closest("p") || membersField.parentNode;
+            function toggle() {
+                membersGroup.style.display = typeSelect.value === "all" ? "none" : "";
+            }
+            typeSelect.addEventListener("change", toggle);
+            toggle();
+        }
+    });
+</script>
+{% endblock %}
