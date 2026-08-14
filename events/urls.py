@@ -35,8 +35,17 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    # Add your routes here, e.g.:
-    # path('', views.event_list, name='event_list'),
-    # path('announcements/', views.announcement_list, name='announcement_list'),
-    # path('email/compose/', views.email_compose, name='email_compose'),
+    path('', views.event_list, name='event_list'),
+    path('add/', views.event_add, name='event_add'),
+    path('<int:pk>/', views.event_detail, name='event_detail'),
+    path('<int:pk>/edit/', views.event_edit, name='event_edit'),
+    path('<int:pk>/cancel/', views.event_cancel, name='event_cancel'),
+    path('<int:pk>/register/', views.event_register, name='event_register'),
+    path('announcements/', views.announcement_list, name='announcement_list'),
+    path('announcements/add/', views.announcement_add, name='announcement_add'),
+    path('announcements/<int:pk>/', views.announcement_detail, name='announcement_detail'),
+    path('announcements/<int:pk>/edit/', views.announcement_edit, name='announcement_edit'),
+    path('announcements/<int:pk>/delete/', views.announcement_delete, name='announcement_delete'),
+    path('email/', views.email_list, name='email_list'),
+    path('email/compose/', views.email_compose, name='email_compose'),
 ]

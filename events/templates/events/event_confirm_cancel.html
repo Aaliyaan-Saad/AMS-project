@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Cancel Event</h2>
+
+    <div class="alert alert-warning mt-3">
+        Are you sure you want to cancel <strong>{{ event.name }}</strong>?
+        <br>
+        Existing registrations will be kept, but new registrations will be blocked.
+    </div>
+
+    <form method="post" data-confirm="Are you sure you want to cancel this event?">
+        {% csrf_token %}
+
+        <button type="submit" class="btn btn-warning">Yes, Cancel Event</button>
+        <a href="{% url 'event_detail' event.pk %}" class="btn btn-secondary">Back</a>
+    </form>
+</div>
+{% endblock %}

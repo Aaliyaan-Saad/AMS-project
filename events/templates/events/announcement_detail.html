@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>{{ announcement.title }}</h2>
+
+        <div>
+            <a href="{% url 'announcement_edit' announcement.pk %}" class="btn btn-primary">Edit</a>
+            <a href="{% url 'announcement_delete' announcement.pk %}" class="btn btn-danger">Delete</a>
+            <a href="{% url 'announcement_list' %}" class="btn btn-secondary">Back to Announcements</a>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <p><strong>Audience:</strong> {{ announcement.get_audience_display }}</p>
+            <p><strong>Priority:</strong> {{ announcement.get_priority_display }}</p>
+            <p><strong>Publish Date:</strong> {{ announcement.publish_date }}</p>
+            <p><strong>Expiry Date:</strong> {{ announcement.expiry_date|default:"-" }}</p>
+            <p><strong>Status:</strong>
+                {% if announcement.is_active %}
+                    Active
+                {% else %}
+                    Inactive
+                {% endif %}
+            </p>
+            {% if announcement.created_by %}
+                <p><strong>Created By:</strong> {{ announcement.created_by.name }}</p>
+            {% endif %}
+            <hr>
+            <p>{{ announcement.message|linebreaks }}</p>
+        </div>
+    </div>
+
+    <a href="{% url 'announcement_list' %}" class="btn btn-secondary">Back to Announcements</a>
+</div>
+{% endblock %}
